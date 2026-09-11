@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -23,6 +23,14 @@ export const metadata: Metadata = {
   title: "Oikos — Finanzas del hogar",
   description:
     "Presupuesto, cuentas, deudas, metas y patrimonio para tu hogar.",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    title: "Oikos",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#1f3a32",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
