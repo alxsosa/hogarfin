@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/layout/page-header";
 
 export default async function HouseholdSettingsPage() {
   const households = await getUserHouseholds();
@@ -16,14 +17,12 @@ export default async function HouseholdSettingsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Hogar</h1>
-        <p className="text-sm text-muted-foreground">
-          Configuración general de {active.name}.
-        </p>
-      </div>
+      <PageHeader
+        title="Hogar"
+        description={`Configuración general de ${active.name}.`}
+      />
 
-      <Card>
+      <Card className="ring-1 ring-foreground/5">
         <CardHeader>
           <CardTitle className="text-base">{active.name}</CardTitle>
           <CardDescription>

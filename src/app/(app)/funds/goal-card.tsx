@@ -71,15 +71,13 @@ export function GoalCard({
             <Plus />
           </Button>
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button
-                size="icon-sm"
-                variant="ghost"
-                disabled={isPending}
-              >
-                <span className="text-xl">⋯</span>
-              </Button>
-            </DropdownMenuTrigger>
+            <DropdownMenuTrigger
+              render={
+                <Button size="icon-sm" variant="ghost" disabled={isPending}>
+                  <span className="text-xl">⋯</span>
+                </Button>
+              }
+            />
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => onEdit?.(goal)}>
                 <Edit2 className="w-4 h-4 mr-2" />

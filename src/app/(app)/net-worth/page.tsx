@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { Wallet, TrendingDown, Scale } from "lucide-react";
 import { getUserHouseholds } from "@/features/households/data";
 import {
   getNetWorthBreakdown,
@@ -18,6 +19,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { PageHeader } from "@/components/layout/page-header";
+import { StatCard } from "@/components/layout/stat-card";
 import { NetWorthTrendChart } from "./net-worth-trend-chart";
 import { SaveSnapshotButton } from "./save-snapshot-button";
 
@@ -92,71 +95,35 @@ export default async function NetWorthPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Patrimonio neto</h1>
-          <p className="text-sm text-muted-foreground">
-            Activos menos pasivos de {active.name}, calculado con tus saldos actuales.
-          </p>
-        </div>
-        <SaveSnapshotButton householdId={active.id} hasToday={snapshotToday} />
-      </div>
+      <PageHeader
+        title="Patrimonio neto"
+        description={`Activos menos pasivos de ${active.name}, calculado con tus saldos actuales.`}
+        action={<SaveSnapshotButton householdId={active.id} hasToday={snapshotToday} />}
+      />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground">
-              Activos totales
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xl font-semibold">
-              {formatCurrency(assets.total, currency)}
-            </p>
-            <p className="text-xs text-muted-foreground">
-              {assets.accounts.length}{" "}
-              {assets.accounts.length === 1 ? "cuenta" : "cuentas"}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground">
-              Pasivos totales
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xl font-semibold">
-              {formatCurrency(liabilities.total, currency)}
-            </p>
-            <p className="text-xs text-muted-foreground">
-              {liabilities.accounts.length} cuentas, {liabilities.debts.length}{" "}
-              {liabilities.debts.length === 1 ? "deuda" : "deudas"}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground">
-              Patrimonio neto
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p
-              className={
-                "text-2xl font-semibold " +
-                (netWorth >= 0
-                  ? "text-emerald-600 dark:text-emerald-400"
-                  : "text-destructive")
-              }
-            >
-              {formatCurrency(netWorth, currency)}
-            </p>
-          </CardContent>
-        </Card>
+        <StatCard
+          label="Activos totales"
+          value={formatCurrency(assets.total, currency)}
+          icon={Wallet}
+          hint={`${assets.accounts.length} ${assets.accounts.length === 1 ? "cuenta" : "cuentas"}`}
+        />
+        <StatCard
+          label="Pasivos totales"
+          value={formatCurrency(liabilities.total, currency)}
+          icon={TrendingDown}
+          tone="danger"
+          hint={`${liabilities.accounts.length} cuentas, ${liabilities.debts.length} ${liabilities.debts.length === 1 ? "deuda" : "deudas"}`}
+        />
+        <StatCard
+          label="Patrimonio neto"
+          value={formatCurrency(netWorth, currency)}
+          icon={Scale}
+          tone={netWorth >= 0 ? "default" : "danger"}
+        />
       </div>
 
-      <Card>
+      <Card className="ring-1 ring-foreground/5">
         <CardHeader>
           <CardTitle className="text-base">Evolución</CardTitle>
         </CardHeader>
@@ -166,7 +133,7 @@ export default async function NetWorthPage() {
       </Card>
 
       {isEmpty ? (
-        <Card>
+        <Card className="ring-1 ring-foreground/5">
           <CardContent className="py-10 text-center text-sm text-muted-foreground">
             Agrega tus cuentas para ver tu patrimonio neto aquí. Ve a{" "}
             <a href="/accounts" className="underline underline-offset-2">
@@ -180,13 +147,13 @@ export default async function NetWorthPage() {
           <div className="space-y-3">
             <h2 className="text-sm font-medium text-muted-foreground">Activos</h2>
             {sortedAssetAccounts.length === 0 ? (
-              <Card>
+              <Card className="ring-1 ring-foreground/5">
                 <CardContent className="py-6 text-center text-sm text-muted-foreground">
                   No tienes cuentas de activos registradas.
                 </CardContent>
               </Card>
             ) : (
-              <Card>
+              <Card className="ring-1 ring-foreground/5">
                 <CardContent className="p-0">
                   <Table>
                     <TableHeader>
@@ -224,14 +191,14 @@ export default async function NetWorthPage() {
           <div className="space-y-3">
             <h2 className="text-sm font-medium text-muted-foreground">Pasivos</h2>
             {liabilityRows.length === 0 ? (
-              <Card>
+              <Card className="ring-1 ring-foreground/5">
                 <CardContent className="py-6 text-center text-sm text-muted-foreground">
                   No tienes cuentas ni deudas de pasivos registradas.
                 </CardContent>
               </Card>
             ) : (
               <>
-                <Card>
+                <Card className="ring-1 ring-foreground/5">
                   <CardContent className="p-0">
                     <Table>
                       <TableHeader>

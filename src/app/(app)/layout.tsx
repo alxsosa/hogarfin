@@ -26,10 +26,12 @@ export default async function AppLayout({
     <div className="flex min-h-svh w-full">
       <AppSidebar />
       <div className="flex flex-1 flex-col">
-        <header className="flex h-14 items-center justify-end border-b px-6">
+        <header className="flex h-16 items-center justify-end border-b bg-background/95 px-8 backdrop-blur">
           <UserMenu email={user.email ?? ""} households={households} />
         </header>
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto bg-gradient-to-b from-white to-muted/30 p-8">
+          {children}
+        </main>
       </div>
     </div>
   );

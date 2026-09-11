@@ -34,11 +34,21 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-60 shrink-0 border-r bg-muted/20 md:flex md:flex-col">
-      <div className="flex h-14 items-center border-b px-4">
-        <span className="font-semibold tracking-tight">Oikos</span>
+    <aside className="hidden w-72 shrink-0 border-r bg-sidebar text-sidebar-foreground md:flex md:flex-col">
+      {/* Logo */}
+      <div className="flex h-16 items-center border-b border-sidebar-border/30 px-6">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-sm">O</span>
+          </div>
+          <span className="font-bold tracking-tight text-lg bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+            OIKOS
+          </span>
+        </div>
       </div>
-      <nav className="flex-1 space-y-1 p-3">
+
+      {/* Navigation */}
+      <nav className="flex-1 space-y-1 p-4 overflow-y-auto">
         {nav.map(({ href, label, icon: Icon }) => {
           const active = pathname === href || pathname.startsWith(href + "/");
           return (
@@ -46,30 +56,35 @@ export function AppSidebar() {
               key={href}
               href={href}
               className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200 relative group",
                 active
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? "bg-gradient-to-r from-primary/20 to-primary/10 text-primary border-l-3 border-primary pl-3.5"
+                  : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-primary/10"
               )}
             >
-              <Icon className="h-4 w-4" />
-              {label}
+              <Icon className="h-5 w-5" />
+              <span className="uppercase tracking-wide text-xs">{label}</span>
+              {!active && (
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-0 bg-gradient-to-b from-primary to-primary/50 rounded-l-full transition-all duration-200 group-hover:h-6"></div>
+              )}
             </Link>
           );
         })}
       </nav>
-      <div className="border-t p-3">
+
+      {/* Settings */}
+      <div className="border-t border-sidebar-border/30 p-4">
         <Link
           href="/settings/household"
           className={cn(
-            "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+            "flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200 relative group",
             pathname.startsWith("/settings")
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              ? "bg-gradient-to-r from-primary/20 to-primary/10 text-primary border-l-3 border-primary pl-3.5"
+              : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-primary/10"
           )}
         >
-          <Settings className="h-4 w-4" />
-          Configuración
+          <Settings className="h-5 w-5" />
+          <span className="uppercase tracking-wide text-xs">Configuración</span>
         </Link>
       </div>
     </aside>

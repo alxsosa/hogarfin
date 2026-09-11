@@ -13,22 +13,29 @@ export type ActionState = {
   fieldErrors?: Record<string, string[]>;
 } | null;
 
+export type CreateHouseholdState =
+  | { error: string; fieldErrors?: Record<string, string[]> }
+  | { id: string }
+  | null;
+
 /**
- * Creates a household. The `on_household_created` DB trigger
- * (0001_profiles_households.sql) automatically adds the creator as
- * OWNER in household_members — no client-side membership insert needed.
+ * Creates a household and returns its id (no redirect — the onboarding
+ * wizard drives navigation client-side). The `on_household_created` DB
+ * trigger (0001_profiles_households.sql) automatically adds the creator
+ * as OWNER in household_members — no client-side membership insert
+ * needed.
  */
 export async function createHousehold(
-  _prevState: ActionState,
+  _prevState: CreateHouseholdState,
   formData: FormData
-): Promise<ActionState> {
+): Promise<CreateHouseholdState> {
   const parsed = createHouseholdSchema.safeParse({
     name: formData.get("name"),
     currency: formData.get("currency") || "MXN",
   });
 
   if (!parsed.success) {
-    return { fieldErrors: parsed.error.flatten().fieldErrors };
+    return { error: "", fieldErrors: parsed.error.flatten().fieldErrors };
   }
 
   const supabase = await createClient();
@@ -40,18 +47,22 @@ export async function createHousehold(
     return { error: "Debes iniciar sesión." };
   }
 
-  const { error } = await supabase.from("households").insert({
-    name: parsed.data.name,
-    currency: parsed.data.currency,
-    created_by: user.id,
-  });
+  const { data, error } = await supabase
+    .from("households")
+    .insert({
+      name: parsed.data.name,
+      currency: parsed.data.currency,
+      created_by: user.id,
+    })
+    .select("id")
+    .single();
 
-  if (error) {
-    return { error: error.message };
+  if (error || !data) {
+    return { error: error?.message ?? "No se pudo crear el hogar." };
   }
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
+  return { id: data.id };
 }
 
 export async function inviteMember(

@@ -18,6 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/layout/page-header";
 
 export default async function MembersPage() {
   const households = await getUserHouseholds();
@@ -40,14 +41,12 @@ export default async function MembersPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Miembros</h1>
-        <p className="text-sm text-muted-foreground">
-          Quién forma parte de {active.name}.
-        </p>
-      </div>
+      <PageHeader
+        title="Miembros"
+        description={`Quién forma parte de ${active.name}.`}
+      />
 
-      <Card>
+      <Card className="ring-1 ring-foreground/5">
         <CardHeader>
           <CardTitle className="text-base">Invitar a alguien</CardTitle>
           <CardDescription>
@@ -60,7 +59,7 @@ export default async function MembersPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="ring-1 ring-foreground/5">
         <CardHeader>
           <CardTitle className="text-base">Miembros actuales</CardTitle>
         </CardHeader>
@@ -92,7 +91,7 @@ export default async function MembersPage() {
       </Card>
 
       {invitations && invitations.length > 0 && (
-        <Card>
+        <Card className="ring-1 ring-foreground/5">
           <CardHeader>
             <CardTitle className="text-base">Invitaciones pendientes</CardTitle>
           </CardHeader>

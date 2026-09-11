@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { PageHeader } from "@/components/layout/page-header";
 import { CreateRuleForm } from "./create-rule-form";
 import { ArchiveRuleButton } from "./archive-rule-button";
 
@@ -37,18 +38,12 @@ export default async function RulesPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Reglas de categorización
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Cuando registras una transacción sin elegir categoría, Oikos
-          revisa estas reglas en orden de prioridad y la asigna
-          automáticamente si alguna coincide.
-        </p>
-      </div>
+      <PageHeader
+        title="Reglas de categorización"
+        description="Cuando registras una transacción sin elegir categoría, Oikos revisa estas reglas en orden de prioridad y la asigna automáticamente si alguna coincide."
+      />
 
-      <Card>
+      <Card className="ring-1 ring-foreground/5">
         <CardHeader>
           <CardTitle className="text-base">Nueva regla</CardTitle>
           <CardDescription>
@@ -61,7 +56,7 @@ export default async function RulesPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="ring-1 ring-foreground/5">
         <CardHeader>
           <CardTitle className="text-base">Reglas activas</CardTitle>
         </CardHeader>

@@ -22,6 +22,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/layout/page-header";
 import { NewTransactionDialog } from "./new-transaction-dialog";
 import { DeleteTransactionButton } from "./delete-transaction-button";
 import { ScanReceiptDialog } from "./scan-receipt-dialog";
@@ -56,35 +57,33 @@ export default async function TransactionsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Transacciones</h1>
-          <p className="text-sm text-muted-foreground">
-            Ingresos y gastos recientes de {active.name}.
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" render={<Link href="/settings/categories" />} nativeButton={false}>
-            Categorías
-          </Button>
-          <Button variant="outline" size="sm" render={<Link href="/settings/rules" />} nativeButton={false}>
-            Reglas
-          </Button>
-          <ScanReceiptDialog
-            householdId={active.id}
-            accounts={accountOptions}
-            categories={categories}
-          />
-          <NewTransactionDialog
-            householdId={active.id}
-            accounts={accountOptions}
-            categories={categories}
-            incomeSources={incomeSources}
-          />
-        </div>
-      </div>
+      <PageHeader
+        title="Transacciones"
+        description={`Ingresos y gastos recientes de ${active.name}.`}
+        action={
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="outline" size="sm" render={<Link href="/settings/categories" />} nativeButton={false}>
+              Categorías
+            </Button>
+            <Button variant="outline" size="sm" render={<Link href="/settings/rules" />} nativeButton={false}>
+              Reglas
+            </Button>
+            <ScanReceiptDialog
+              householdId={active.id}
+              accounts={accountOptions}
+              categories={categories}
+            />
+            <NewTransactionDialog
+              householdId={active.id}
+              accounts={accountOptions}
+              categories={categories}
+              incomeSources={incomeSources}
+            />
+          </div>
+        }
+      />
 
-      <Card>
+      <Card className="ring-1 ring-foreground/5">
         <CardHeader>
           <CardTitle className="text-base">Movimientos recientes</CardTitle>
         </CardHeader>
@@ -143,7 +142,7 @@ export default async function TransactionsPage() {
                       className={
                         "text-right font-medium " +
                         (t.type === "INCOME"
-                          ? "text-emerald-600 dark:text-emerald-400"
+                          ? "text-primary"
                           : t.type === "EXPENSE"
                             ? "text-destructive"
                             : "text-foreground")

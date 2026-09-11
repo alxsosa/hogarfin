@@ -9,6 +9,26 @@ export type ActionState = {
   fieldErrors?: Record<string, string[]>;
 } | null;
 
+/** Leaf categories (parent_id set) for a household, for clients that
+ * need to fetch them outside a server component — e.g. the onboarding
+ * wizard, which only learns the household id once step 1 completes. */
+export async function getCategoriesForBudgetStep(
+  householdId: string
+): Promise<{ id: string; name: string }[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("categories")
+    .select("id, name, parent_id")
+    .eq("household_id", householdId)
+    .eq("archived", false)
+    .not("parent_id", "is", null)
+    .order("sort_order", { ascending: true })
+    .order("name", { ascending: true });
+
+  if (error || !data) return [];
+  return data.map((c) => ({ id: c.id, name: c.name }));
+}
+
 /** Finds or creates the budget_periods row for a household + month, then
  * returns its id. The trg_budget_periods_normalize trigger truncates
  * period_month to the 1st of the month regardless of what we send. */

@@ -99,7 +99,7 @@ export function TransactionForm({
           className={cn(
             "flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-colors",
             type === "INCOME"
-              ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+              ? "border-primary/40 bg-primary/10 text-primary"
               : "border-input text-muted-foreground hover:bg-muted"
           )}
         >

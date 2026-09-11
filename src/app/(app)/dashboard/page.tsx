@@ -1,13 +1,23 @@
+import {
+  Wallet,
+  PiggyBank,
+  TrendingUp,
+  TrendingDown,
+  Banknote,
+  CreditCard,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PageHeader } from "@/components/layout/page-header";
+import { StatCard } from "@/components/layout/stat-card";
 import { getUserHouseholds } from "@/features/households/data";
 
 const cards = [
-  { label: "Patrimonio neto", value: "$0.00" },
-  { label: "Dinero disponible", value: "$0.00" },
-  { label: "Ingresos del mes", value: "$0.00" },
-  { label: "Gastos del mes", value: "$0.00" },
-  { label: "Ahorro", value: "$0.00" },
-  { label: "Deuda", value: "$0.00" },
+  { label: "Patrimonio neto", value: "$0.00", icon: TrendingUp, tone: "default" as const },
+  { label: "Dinero disponible", value: "$0.00", icon: Wallet, tone: "default" as const },
+  { label: "Ingresos del mes", value: "$0.00", icon: Banknote, tone: "info" as const },
+  { label: "Gastos del mes", value: "$0.00", icon: TrendingDown, tone: "danger" as const },
+  { label: "Ahorro", value: "$0.00", icon: PiggyBank, tone: "default" as const },
+  { label: "Deuda", value: "$0.00", icon: CreditCard, tone: "danger" as const },
 ];
 
 export default async function DashboardPage() {
@@ -15,32 +25,25 @@ export default async function DashboardPage() {
   const active = households[0];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          {active?.name ?? "Dashboard"}
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Resumen financiero del hogar.
-        </p>
-      </div>
+    <div className="space-y-8">
+      <PageHeader
+        title={active?.name ?? "Dashboard"}
+        description="Resumen financiero del hogar."
+      />
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
         {cards.map((c) => (
-          <Card key={c.label}>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xs font-medium text-muted-foreground">
-                {c.label}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xl font-semibold">{c.value}</p>
-            </CardContent>
-          </Card>
+          <StatCard
+            key={c.label}
+            label={c.label}
+            value={c.value}
+            icon={c.icon}
+            tone={c.tone}
+          />
         ))}
       </div>
 
-      <Card>
+      <Card className="ring-1 ring-foreground/5">
         <CardHeader>
           <CardTitle className="text-base">Empieza a configurar tu hogar</CardTitle>
         </CardHeader>

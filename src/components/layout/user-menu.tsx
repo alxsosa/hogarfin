@@ -4,6 +4,7 @@ import { LogOut, Home } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -38,16 +39,18 @@ export function UserMenu({
         }
       />
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>Hogares</DropdownMenuLabel>
-        {households.map((h) => (
-          <DropdownMenuItem key={h.id} disabled className="gap-2">
-            <Home className="h-4 w-4" />
-            {h.name}
-            <span className="ml-auto text-xs text-muted-foreground">
-              {h.role}
-            </span>
-          </DropdownMenuItem>
-        ))}
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Hogares</DropdownMenuLabel>
+          {households.map((h) => (
+            <DropdownMenuItem key={h.id} disabled className="gap-2">
+              <Home className="h-4 w-4" />
+              {h.name}
+              <span className="ml-auto text-xs text-muted-foreground">
+                {h.role}
+              </span>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="text-destructive"

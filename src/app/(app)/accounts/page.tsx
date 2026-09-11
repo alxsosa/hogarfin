@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { Wallet, TrendingDown, Scale } from "lucide-react";
 import { getUserHouseholds } from "@/features/households/data";
 import {
   getHouseholdAccounts,
@@ -8,6 +9,8 @@ import {
 } from "@/features/accounts/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/layout/page-header";
+import { StatCard } from "@/components/layout/stat-card";
 import { NewAccountDialog } from "./new-account-dialog";
 import { EditAccountDialog } from "./edit-account-dialog";
 import { ArchiveAccountButton } from "./archive-account-button";
@@ -52,47 +55,30 @@ export default async function AccountsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Cuentas</h1>
-          <p className="text-sm text-muted-foreground">
-            Cuentas bancarias, tarjetas, efectivo y otros activos de {active.name}.
-          </p>
-        </div>
-        <NewAccountDialog householdId={active.id} />
-      </div>
+      <PageHeader
+        title="Cuentas"
+        description={`Cuentas bancarias, tarjetas, efectivo y otros activos de ${active.name}.`}
+        action={<NewAccountDialog householdId={active.id} />}
+      />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground">
-              Activos totales
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xl font-semibold">{formatCurrency(totalAssets, currency)}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground">
-              Pasivos totales
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xl font-semibold">{formatCurrency(totalLiabilities, currency)}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground">
-              Patrimonio neto
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xl font-semibold">{formatCurrency(net, currency)}</p>
-          </CardContent>
-        </Card>
+        <StatCard
+          label="Activos totales"
+          value={formatCurrency(totalAssets, currency)}
+          icon={Wallet}
+        />
+        <StatCard
+          label="Pasivos totales"
+          value={formatCurrency(totalLiabilities, currency)}
+          icon={TrendingDown}
+          tone="danger"
+        />
+        <StatCard
+          label="Patrimonio neto"
+          value={formatCurrency(net, currency)}
+          icon={Scale}
+          tone="info"
+        />
       </div>
 
       {accounts.length === 0 ? (
@@ -139,8 +125,16 @@ function AccountCard({
       ? account.credit_limit - account.current_balance
       : null;
 
+  const liability = isLiability(account.type);
+
   return (
-    <Card>
+    <Card className="relative gap-3 ring-1 ring-foreground/5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
+      <div
+        className={
+          "absolute inset-x-0 top-0 h-[3px] rounded-t-xl bg-gradient-to-r " +
+          (liability ? "from-destructive to-destructive/70" : "from-primary to-primary/70")
+        }
+      />
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between gap-2">
           <div>
@@ -149,7 +143,7 @@ function AccountCard({
               <p className="text-xs text-muted-foreground">{account.institution}</p>
             )}
           </div>
-          <Badge variant={isLiability(account.type) ? "outline" : "secondary"}>
+          <Badge variant={liability ? "outline" : "secondary"}>
             {ACCOUNT_TYPE_LABELS[account.type] ?? account.type}
           </Badge>
         </div>

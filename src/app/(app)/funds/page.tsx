@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getUserHouseholds } from "@/features/households/data";
 import { getHouseholdFunds, getHouseholdGoals } from "@/features/funds/data";
+import { PageHeader } from "@/components/layout/page-header";
 import { FundsGoalsTabs } from "./funds-goals-tabs";
 
 export default async function FundsPage() {
@@ -15,14 +16,10 @@ export default async function FundsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Fondos y metas
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Ahorra para lo que importa, con un propósito claro para cada peso.
-        </p>
-      </div>
+      <PageHeader
+        title="Fondos y metas"
+        description="Ahorra para lo que importa, con un propósito claro para cada peso."
+      />
 
       <FundsGoalsTabs
         householdId={active.id}

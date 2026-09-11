@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { Banknote, PieChart, Wallet, ReceiptText } from "lucide-react";
 import { getUserHouseholds } from "@/features/households/data";
 import {
   getBudgetPeriod,
@@ -17,6 +18,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { PageHeader } from "@/components/layout/page-header";
+import { StatCard } from "@/components/layout/stat-card";
 
 function formatCurrency(amount: number, currency: string) {
   return new Intl.NumberFormat("es-MX", {
@@ -54,75 +57,46 @@ export default async function BudgetPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight capitalize">
-          Presupuesto — {monthLabel(period)}
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Cada peso asignado a una categoría. Basado en tus ingresos y
-          transacciones reales del mes.
-        </p>
-      </div>
+      <PageHeader
+        title={`Presupuesto — ${monthLabel(period)}`}
+        description="Cada peso asignado a una categoría. Basado en tus ingresos y transacciones reales del mes."
+        className="capitalize"
+      />
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground">
-              Ingresos
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xl font-semibold">
-              {formatCurrency(unassigned.total_income, active.currency)}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground">
-              Asignado
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xl font-semibold">
-              {formatCurrency(unassigned.total_allocated, active.currency)}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground">
-              Sin asignar
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p
-              className={`text-xl font-semibold ${
-                unassigned.unassigned < 0 ? "text-destructive" : ""
-              }`}
-            >
-              {formatCurrency(unassigned.unassigned, active.currency)}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground">
-              Gastado del presupuesto
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xl font-semibold">
+        <StatCard
+          label="Ingresos"
+          value={formatCurrency(unassigned.total_income, active.currency)}
+          icon={Banknote}
+          tone="info"
+        />
+        <StatCard
+          label="Asignado"
+          value={formatCurrency(unassigned.total_allocated, active.currency)}
+          icon={PieChart}
+        />
+        <StatCard
+          label="Sin asignar"
+          value={formatCurrency(unassigned.unassigned, active.currency)}
+          icon={Wallet}
+          tone={unassigned.unassigned < 0 ? "danger" : "default"}
+        />
+        <StatCard
+          label="Gastado del presupuesto"
+          value={
+            <>
               {formatCurrency(totalActual, active.currency)}
               <span className="ml-1 text-sm font-normal text-muted-foreground">
                 / {formatCurrency(totalBudgeted, active.currency)}
               </span>
-            </p>
-          </CardContent>
-        </Card>
+            </>
+          }
+          icon={ReceiptText}
+          tone="danger"
+        />
       </div>
 
-      <Card>
+      <Card className="ring-1 ring-foreground/5">
         <CardHeader>
           <CardTitle className="text-base">Categorías</CardTitle>
         </CardHeader>

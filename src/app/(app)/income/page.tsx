@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { Banknote, TrendingUp } from "lucide-react";
 import { getUserHouseholds } from "@/features/households/data";
 import {
   getHouseholdIncomeSources,
@@ -6,8 +7,9 @@ import {
 } from "@/features/income/data";
 import { getHouseholdAccounts } from "@/features/accounts/data";
 import { getHouseholdCategories } from "@/features/transactions/data";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/features/funds/format";
+import { PageHeader } from "@/components/layout/page-header";
+import { StatCard } from "@/components/layout/stat-card";
 import { IncomeList } from "./income-list";
 import { CreateIncomeButton } from "./create-income-button";
 
@@ -57,51 +59,33 @@ export default async function IncomePage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Ingresos</h1>
-          <p className="text-sm text-muted-foreground">
-            Da seguimiento a tus fuentes de ingreso y compáralas con lo
-            recibido cada mes.
-          </p>
-        </div>
-        <CreateIncomeButton
-          householdId={active.id}
-          accounts={accounts}
-          categories={categories}
-        />
-      </div>
+      <PageHeader
+        title="Ingresos"
+        description="Da seguimiento a tus fuentes de ingreso y compáralas con lo recibido cada mes."
+        action={
+          <CreateIncomeButton
+            householdId={active.id}
+            accounts={accounts}
+            categories={categories}
+          />
+        }
+      />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground">
-              Ingreso mensual esperado
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-semibold">
-              {formatCurrency(expectedMonthly, active.currency)}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground">
-              Ingreso recibido este mes
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-semibold">
-              {formatCurrency(actualIncome, active.currency)}
-            </p>
-            {variancePct != null && (
-              <p className="mt-1 text-xs text-muted-foreground">
-                {variancePct.toFixed(0)}% de lo esperado
-              </p>
-            )}
-          </CardContent>
-        </Card>
+        <StatCard
+          label="Ingreso mensual esperado"
+          value={formatCurrency(expectedMonthly, active.currency)}
+          icon={Banknote}
+          tone="info"
+        />
+        <StatCard
+          label="Ingreso recibido este mes"
+          value={formatCurrency(actualIncome, active.currency)}
+          icon={TrendingUp}
+          hint={
+            variancePct != null ? `${variancePct.toFixed(0)}% de lo esperado` : undefined
+          }
+        />
       </div>
 
       {incomeSources.length === 0 ? (

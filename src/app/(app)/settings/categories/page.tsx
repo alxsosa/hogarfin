@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/layout/page-header";
 import { AddCategoryForm } from "./add-category-form";
 
 export default async function CategoriesPage() {
@@ -21,14 +22,12 @@ export default async function CategoriesPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Categorías</h1>
-        <p className="text-sm text-muted-foreground">
-          Organiza los grupos y subcategorías de {active.name}.
-        </p>
-      </div>
+      <PageHeader
+        title="Categorías"
+        description={`Organiza los grupos y subcategorías de ${active.name}.`}
+      />
 
-      <Card>
+      <Card className="ring-1 ring-foreground/5">
         <CardHeader>
           <CardTitle className="text-base">Agregar categoría</CardTitle>
           <CardDescription>
@@ -41,7 +40,7 @@ export default async function CategoriesPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="ring-1 ring-foreground/5">
         <CardHeader>
           <CardTitle className="text-base">Todas las categorías</CardTitle>
         </CardHeader>

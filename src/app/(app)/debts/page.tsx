@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
+import { CreditCard } from "lucide-react";
 import { getUserHouseholds } from "@/features/households/data";
 import { getHouseholdDebts } from "@/features/funds/data";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/features/funds/format";
+import { PageHeader } from "@/components/layout/page-header";
+import { StatCard } from "@/components/layout/stat-card";
 import { DebtsList } from "./debts-list";
 import { CreateDebtButton } from "./create-debt-button";
 
@@ -16,28 +18,19 @@ export default async function DebtsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Deudas</h1>
-          <p className="text-sm text-muted-foreground">
-            Da seguimiento a lo que debes y a tu plan para pagarlo.
-          </p>
-        </div>
-        <CreateDebtButton householdId={active.id} />
-      </div>
+      <PageHeader
+        title="Deudas"
+        description="Da seguimiento a lo que debes y a tu plan para pagarlo."
+        action={<CreateDebtButton householdId={active.id} />}
+      />
 
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-xs font-medium text-muted-foreground">
-            Deuda total
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-2xl font-semibold">
-            {formatCurrency(total, active.currency)}
-          </p>
-        </CardContent>
-      </Card>
+      <StatCard
+        label="Deuda total"
+        value={formatCurrency(total, active.currency)}
+        icon={CreditCard}
+        tone="danger"
+        className="sm:max-w-xs"
+      />
 
       {debts.length === 0 ? (
         <div className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
