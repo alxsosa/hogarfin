@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "HogarFin — Finanzas del hogar",
+  title: "Oikos — Finanzas del hogar",
   description:
     "Presupuesto, cuentas, deudas, metas y patrimonio para tu hogar.",
 };

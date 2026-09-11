@@ -8,7 +8,7 @@ export default function AuthLayout({
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <span className="text-2xl font-semibold tracking-tight">
-            HogarFin
+            Oikos
           </span>
           <p className="mt-1 text-sm text-muted-foreground">
             Finanzas del hogar, en un solo lugar.

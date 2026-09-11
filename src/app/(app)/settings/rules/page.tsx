@@ -42,7 +42,7 @@ export default async function RulesPage() {
           Reglas de categorización
         </h1>
         <p className="text-sm text-muted-foreground">
-          Cuando registras una transacción sin elegir categoría, HogarFin
+          Cuando registras una transacción sin elegir categoría, Oikos
           revisa estas reglas en orden de prioridad y la asigna
           automáticamente si alguna coincide.
         </p>

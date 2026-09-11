@@ -1,6 +1,6 @@
 # Environment variables
 
-HogarFin uses Supabase via the Vercel Marketplace integration. Once linked:
+Oikos uses Supabase via the Vercel Marketplace integration. Once linked:
 
 ```bash
 vercel link

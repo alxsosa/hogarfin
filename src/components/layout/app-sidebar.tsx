@@ -36,7 +36,7 @@ export function AppSidebar() {
   return (
     <aside className="hidden w-60 shrink-0 border-r bg-muted/20 md:flex md:flex-col">
       <div className="flex h-14 items-center border-b px-4">
-        <span className="font-semibold tracking-tight">HogarFin</span>
+        <span className="font-semibold tracking-tight">Oikos</span>
       </div>
       <nav className="flex-1 space-y-1 p-3">
         {nav.map(({ href, label, icon: Icon }) => {

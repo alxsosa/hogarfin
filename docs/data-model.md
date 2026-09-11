@@ -1,4 +1,4 @@
-# HogarFin — Data Model (PostgreSQL / Supabase)
+# Oikos — Data Model (PostgreSQL / Supabase)
 
 Multi-tenant household finance SaaS. Tenancy boundary is the **household**
 (`households.id`), enforced end-to-end with Postgres Row Level Security (RLS).

@@ -100,7 +100,7 @@ export function ScanReceiptDialog({
         <DialogHeader>
           <DialogTitle>Escanear ticket</DialogTitle>
           <DialogDescription>
-            Toma o sube una foto del recibo — HogarFin lee el monto, el
+            Toma o sube una foto del recibo — Oikos lee el monto, el
             comercio y sugiere una categoría. Tú confirmas antes de
             guardar.
           </DialogDescription>
