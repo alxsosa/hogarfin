@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { NewTransactionDialog } from "./new-transaction-dialog";
 import { DeleteTransactionButton } from "./delete-transaction-button";
+import { ScanReceiptDialog } from "./scan-receipt-dialog";
 
 function formatCurrency(amount: number, currency: string) {
   return new Intl.NumberFormat("es-MX", {
@@ -67,6 +68,11 @@ export default async function TransactionsPage() {
           <Button variant="outline" size="sm" render={<Link href="/settings/rules" />} nativeButton={false}>
             Reglas
           </Button>
+          <ScanReceiptDialog
+            householdId={active.id}
+            accounts={accountOptions}
+            categories={categories}
+          />
           <NewTransactionDialog
             householdId={active.id}
             accounts={accountOptions}

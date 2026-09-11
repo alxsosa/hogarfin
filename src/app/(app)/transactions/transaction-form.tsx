@@ -21,16 +21,27 @@ function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
+export type TransactionFormDefaults = {
+  date?: string;
+  amount?: number;
+  description?: string;
+  merchant?: string;
+  accountId?: string;
+  categoryId?: string;
+};
+
 export function TransactionForm({
   householdId,
   accounts,
   categories,
   onSuccess,
+  defaultValues,
 }: {
   householdId: string;
   accounts: AccountOption[];
   categories: CategoryRow[];
   onSuccess?: () => void;
+  defaultValues?: TransactionFormDefaults;
 }) {
   const [state, formAction, pending] = useActionState(createTransaction, null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -81,7 +92,13 @@ export function TransactionForm({
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="date">Fecha</Label>
-          <Input id="date" name="date" type="date" defaultValue={todayISO()} required />
+          <Input
+            id="date"
+            name="date"
+            type="date"
+            defaultValue={defaultValues?.date ?? todayISO()}
+            required
+          />
           {state?.fieldErrors?.date && (
             <p className="text-sm text-destructive">{state.fieldErrors.date[0]}</p>
           )}
@@ -95,6 +112,7 @@ export function TransactionForm({
             step="0.01"
             min="0.01"
             placeholder="0.00"
+            defaultValue={defaultValues?.amount}
             required
           />
           {state?.fieldErrors?.amount && (
@@ -105,7 +123,13 @@ export function TransactionForm({
 
       <div className="space-y-2">
         <Label htmlFor="description">Descripción</Label>
-        <Input id="description" name="description" placeholder="Ej. Compra de despensa" required />
+        <Input
+          id="description"
+          name="description"
+          placeholder="Ej. Compra de despensa"
+          defaultValue={defaultValues?.description}
+          required
+        />
         {state?.fieldErrors?.description && (
           <p className="text-sm text-destructive">{state.fieldErrors.description[0]}</p>
         )}
@@ -113,13 +137,18 @@ export function TransactionForm({
 
       <div className="space-y-2">
         <Label htmlFor="merchant">Comercio (opcional)</Label>
-        <Input id="merchant" name="merchant" placeholder="Ej. Walmart" />
+        <Input
+          id="merchant"
+          name="merchant"
+          placeholder="Ej. Walmart"
+          defaultValue={defaultValues?.merchant}
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="accountId">Cuenta</Label>
-          <Select name="accountId">
+          <Select name="accountId" defaultValue={defaultValues?.accountId}>
             <SelectTrigger id="accountId" className="w-full">
               <SelectValue placeholder="Elige una cuenta">
                 {(value: string | null) =>
@@ -142,7 +171,7 @@ export function TransactionForm({
 
         <div className="space-y-2">
           <Label htmlFor="categoryId">Categoría</Label>
-          <Select name="categoryId">
+          <Select name="categoryId" defaultValue={defaultValues?.categoryId}>
             <SelectTrigger id="categoryId" className="w-full">
               <SelectValue placeholder="Sin categoría">
                 {(value: string | null) =>
