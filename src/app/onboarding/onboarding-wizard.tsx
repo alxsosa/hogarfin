@@ -13,7 +13,7 @@ import {
   setBudgetLine,
   getCategoriesForBudgetStep,
 } from "@/features/budget/actions";
-import { periodMonthKey } from "@/features/budget/data";
+import { periodMonthKey } from "@/features/budget/period";
 import { StepHousehold } from "./steps/step-household";
 import { StepInvite } from "./steps/step-invite";
 import { StepAccounts, type DraftAccount } from "./steps/step-accounts";

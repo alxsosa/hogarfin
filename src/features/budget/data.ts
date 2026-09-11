@@ -1,6 +1,8 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
 
+export { periodMonthKey } from "./period";
+
 export type BudgetLineRow = {
   budget_line_id: string;
   category_id: string;
@@ -16,14 +18,6 @@ export type BudgetUnassignedRow = {
   total_allocated: number;
   unassigned: number;
 };
-
-/** First-of-month string ("YYYY-MM-01") for a given Date, defaulting to
- * the current month. Matches the normalize_period_month trigger in
- * 0004_budget.sql, which truncates whatever date is inserted anyway —
- * this just keeps client-side display consistent with what's stored. */
-export function periodMonthKey(date: Date = new Date()): string {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-01`;
-}
 
 /** Finds (but does not create) the budget_periods row for a household +
  * month. Returns null if the household hasn't started a budget for that
