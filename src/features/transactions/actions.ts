@@ -7,6 +7,7 @@ import {
   createCategorySchema,
   parseTags,
 } from "@/lib/validations/transaction";
+import { matchCategorizationRule } from "@/features/rules/actions";
 
 export type ActionState = {
   error?: string;
@@ -47,10 +48,21 @@ export async function createTransaction(
     return { error: "Debes iniciar sesión." };
   }
 
+  // A rule only fills the category when the user left it blank — an
+  // explicit choice in the form always wins over auto-categorization.
+  let categoryId = parsed.data.categoryId || null;
+  if (!categoryId) {
+    categoryId = await matchCategorizationRule(parsed.data.householdId, {
+      description: parsed.data.description,
+      merchant: parsed.data.merchant || null,
+      amount: parsed.data.amount,
+    });
+  }
+
   const { error } = await supabase.from("transactions").insert({
     household_id: parsed.data.householdId,
     account_id: parsed.data.accountId,
-    category_id: parsed.data.categoryId || null,
+    category_id: categoryId,
     user_id: user.id,
     date: parsed.data.date,
     description: parsed.data.description,

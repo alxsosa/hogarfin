@@ -64,6 +64,9 @@ export default async function TransactionsPage() {
           <Button variant="outline" size="sm" render={<Link href="/settings/categories" />} nativeButton={false}>
             Categorías
           </Button>
+          <Button variant="outline" size="sm" render={<Link href="/settings/rules" />} nativeButton={false}>
+            Reglas
+          </Button>
           <NewTransactionDialog
             householdId={active.id}
             accounts={accountOptions}
