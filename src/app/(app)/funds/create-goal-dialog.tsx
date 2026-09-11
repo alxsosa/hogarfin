@@ -71,7 +71,13 @@ export function CreateGoalDialog({
             <Label htmlFor="goal-type">Tipo</Label>
             <Select name="type" defaultValue="custom">
               <SelectTrigger id="goal-type" className="w-full">
-                <SelectValue />
+                <SelectValue>
+                  {(value: string | null) =>
+                    value
+                      ? goalTypeLabels[value as keyof typeof goalTypeLabels]
+                      : "Selecciona un tipo"
+                  }
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {goalTypeValues.map((value) => (

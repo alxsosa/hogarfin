@@ -54,7 +54,11 @@ export function AddCategoryForm({
         <Label htmlFor="parentId">Grupo (opcional)</Label>
         <Select name="parentId">
           <SelectTrigger id="parentId" className="w-48">
-            <SelectValue placeholder="Categoría principal" />
+            <SelectValue placeholder="Categoría principal">
+              {(value: string | null) =>
+                groups.find((g) => g.id === value)?.name ?? "Categoría principal"
+              }
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {groups.map((g) => (

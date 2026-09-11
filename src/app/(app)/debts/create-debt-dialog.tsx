@@ -153,7 +153,13 @@ export function CreateDebtDialog({
             <Label htmlFor="debt-strategy">Estrategia (opcional)</Label>
             <Select name="strategy" defaultValue="">
               <SelectTrigger id="debt-strategy" className="w-full">
-                <SelectValue placeholder="Sin definir" />
+                <SelectValue placeholder="Sin definir">
+                  {(value: string | null) =>
+                    value
+                      ? debtStrategyLabels[value as keyof typeof debtStrategyLabels]
+                      : "Sin definir"
+                  }
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {debtStrategyValues.map((value) => (

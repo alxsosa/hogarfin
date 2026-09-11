@@ -14,6 +14,12 @@ import {
 } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
+const CURRENCY_LABELS: Record<string, string> = {
+  MXN: "MXN — Peso mexicano",
+  USD: "USD — Dólar",
+  EUR: "EUR — Euro",
+};
+
 export function CreateHouseholdForm() {
   const [state, formAction, pending] = useActionState(createHousehold, null);
 
@@ -42,7 +48,9 @@ export function CreateHouseholdForm() {
         <Label htmlFor="currency">Moneda principal</Label>
         <Select name="currency" defaultValue="MXN">
           <SelectTrigger id="currency" className="w-full">
-            <SelectValue />
+            <SelectValue>
+              {(value: string | null) => CURRENCY_LABELS[value ?? "MXN"]}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="MXN">MXN — Peso mexicano</SelectItem>

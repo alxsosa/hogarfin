@@ -121,7 +121,11 @@ export function TransactionForm({
           <Label htmlFor="accountId">Cuenta</Label>
           <Select name="accountId">
             <SelectTrigger id="accountId" className="w-full">
-              <SelectValue placeholder="Elige una cuenta" />
+              <SelectValue placeholder="Elige una cuenta">
+                {(value: string | null) =>
+                  accounts.find((a) => a.id === value)?.name ?? "Elige una cuenta"
+                }
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {accounts.map((a) => (
@@ -140,7 +144,11 @@ export function TransactionForm({
           <Label htmlFor="categoryId">Categoría</Label>
           <Select name="categoryId">
             <SelectTrigger id="categoryId" className="w-full">
-              <SelectValue placeholder="Sin categoría" />
+              <SelectValue placeholder="Sin categoría">
+                {(value: string | null) =>
+                  categories.find((c) => c.id === value)?.name ?? "Sin categoría"
+                }
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {categories.map((c) => (

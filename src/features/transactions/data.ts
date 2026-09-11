@@ -25,10 +25,14 @@ export async function getHouseholdTransactions(
   const supabase = await createClient();
   const limit = opts?.limit ?? 50;
 
+  // `categories!transactions_category_id_fkey` disambiguates the embed:
+  // transactions has two FKs into categories (category_id, subcategory_id),
+  // so a plain `categories(...)` is rejected by PostgREST as ambiguous
+  // (PGRST201) and the query would otherwise fail silently here.
   const { data, error } = await supabase
     .from("transactions")
     .select(
-      "id, date, description, merchant, amount, currency, type, status, notes, tags, accounts(id, name), categories(id, name, icon, color)"
+      "id, date, description, merchant, amount, currency, type, status, notes, tags, accounts(id, name), categories!transactions_category_id_fkey(id, name, icon, color)"
     )
     .eq("household_id", householdId)
     .neq("status", "void")
@@ -36,7 +40,11 @@ export async function getHouseholdTransactions(
     .order("created_at", { ascending: false })
     .limit(limit);
 
-  if (error || !data) return [];
+  if (error) {
+    console.error("getHouseholdTransactions failed:", error);
+    return [];
+  }
+  if (!data) return [];
 
   return data.map((row) => {
     const r = row as unknown as {

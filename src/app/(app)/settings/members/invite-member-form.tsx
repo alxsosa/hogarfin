@@ -15,6 +15,12 @@ import {
 } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
+const ROLE_LABELS: Record<string, string> = {
+  ADMIN: "Admin",
+  MEMBER: "Miembro",
+  VIEWER: "Solo lectura",
+};
+
 export function InviteMemberForm({ householdId }: { householdId: string }) {
   const [state, formAction, pending] = useActionState(inviteMember, null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -43,7 +49,9 @@ export function InviteMemberForm({ householdId }: { householdId: string }) {
         <Label htmlFor="role">Rol</Label>
         <Select name="role" defaultValue="MEMBER">
           <SelectTrigger id="role" className="w-36">
-            <SelectValue />
+            <SelectValue>
+              {(value: string | null) => ROLE_LABELS[value ?? "MEMBER"]}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="ADMIN">Admin</SelectItem>

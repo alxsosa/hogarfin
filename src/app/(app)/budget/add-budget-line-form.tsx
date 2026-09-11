@@ -48,7 +48,12 @@ export function AddBudgetLineForm({
         <Label htmlFor="categoryId">Categoría</Label>
         <Select name="categoryId" required>
           <SelectTrigger id="categoryId" className="w-full">
-            <SelectValue placeholder="Selecciona una categoría" />
+            <SelectValue placeholder="Selecciona una categoría">
+              {(value: string | null) =>
+                categories.find((c) => c.id === value)?.name ??
+                "Selecciona una categoría"
+              }
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {categories.map((c) => (

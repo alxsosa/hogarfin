@@ -86,7 +86,13 @@ export function AccountForm({
             onValueChange={(value) => setType(value ?? "checking")}
           >
             <SelectTrigger id="type" className="w-full">
-              <SelectValue />
+              <SelectValue>
+                {(value: string | null) =>
+                  value
+                    ? ACCOUNT_TYPE_LABELS[value as AccountType]
+                    : "Selecciona un tipo"
+                }
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {Object.entries(ACCOUNT_TYPE_LABELS).map(([value, label]) => (
