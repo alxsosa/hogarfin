@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HogarFin
 
-## Getting Started
+Plataforma de finanzas del hogar — presupuesto, cuentas, transacciones,
+deudas, metas, patrimonio y flujo de efectivo, diseñada desde cero como
+multiusuario/multi-hogar (no un simple clon de EveryDollar). Ver
+[docs/data-model.md](docs/data-model.md) para el modelo de datos completo
+y [docs/env-setup.md](docs/env-setup.md) para conectar Supabase.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 (App Router, Turbopack) + TypeScript
+- Tailwind CSS v4 + shadcn/ui (Base UI)
+- Supabase (Postgres + Auth + RLS), vía integración de Vercel Marketplace
+- Zod + React Hook Form
+- Recharts, Zustand / TanStack Query
+
+## Desarrollo
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Antes de correr la app necesitas conectar Supabase — ver
+[docs/env-setup.md](docs/env-setup.md).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Estado del proyecto
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Fase 1 — Arquitectura, auth, hogares (✅ implementada):**
+- Registro/login (Supabase Auth)
+- Crear hogar, ver hogares propios
+- Invitar miembros por correo, aceptar invitación (RPC segura)
+- RLS exhaustivo: cada tabla con `household_id` está aislada por
+  membresía, vía el helper `is_household_member()` en
+  `supabase/migrations/0001_profiles_households.sql`
 
-## Learn More
+**Fase 2 — Cuentas, transacciones, categorías (schema ✅, UI pendiente):**
+- Migraciones `0002_accounts_categories.sql`, `0003_transactions.sql`
+- Divide transacciones, transferencias (excluidas de reportes de
+  ingreso/gasto), categorías personalizables (no hardcodeadas)
 
-To learn more about Next.js, take a look at the following resources:
+**Fase 3 — Presupuesto (schema ✅, UI pendiente):**
+- `0004_budget.sql` — presupuesto mensual estilo "cada peso asignado",
+  vistas `v_budget_vs_actual` y `v_budget_unassigned`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Diseñado pero no implementado aún (Fases 5+):** fondos, metas, deudas,
+facturas recurrentes, ingresos, flujo de efectivo proyectado, patrimonio
+neto histórico, reportes, reglas de auto-categorización, importación
+CSV/Excel, integración bancaria real, notificaciones, conciliación,
+SaaS/billing. El schema para fondos/metas/deudas/facturas/reglas/auditoría
+ya existe (`0005`–`0007`) para no tener que rediseñar tablas después.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Aplicar las migraciones
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+vercel link
+vercel integration add supabase --yes
+vercel env pull --yes
+supabase link --project-ref <tu-proyecto>
+supabase db push
+```
