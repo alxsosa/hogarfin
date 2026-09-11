@@ -1,4 +1,5 @@
 import "server-only";
+import { createClient } from "@/lib/supabase/server";
 import {
   getHouseholdAccounts,
   isLiability,
@@ -61,4 +62,56 @@ export async function getNetWorthBreakdown(
     },
     netWorth: assetsTotal - liabilitiesTotal,
   };
+}
+
+export type NetWorthSnapshotRow = {
+  id: string;
+  snapshotDate: string; // "YYYY-MM-DD"
+  assetsTotal: number;
+  liabilitiesTotal: number;
+  netWorth: number;
+};
+
+/** Historical net worth snapshots for a household, oldest first — the
+ * shape a trend chart wants. Reads net_worth_snapshots (0009 migration),
+ * never recomputed from current balances, so a snapshot survives later
+ * edits/archives to the accounts and debts it was built from. */
+export async function getNetWorthHistory(
+  householdId: string
+): Promise<NetWorthSnapshotRow[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("net_worth_snapshots")
+    .select("id, snapshot_date, assets_total, liabilities_total, net_worth")
+    .eq("household_id", householdId)
+    .order("snapshot_date", { ascending: true });
+
+  if (error || !data) return [];
+
+  return data.map((r) => ({
+    id: r.id,
+    snapshotDate: r.snapshot_date,
+    assetsTotal: Number(r.assets_total),
+    liabilitiesTotal: Number(r.liabilities_total),
+    netWorth: Number(r.net_worth),
+  }));
+}
+
+/** Whether a snapshot already exists for today — used to disable/relabel
+ * the "Guardar snapshot" button so a second click updates today's row
+ * (via the unique household_id+snapshot_date constraint's upsert) rather
+ * than reading as "nothing happened". */
+export async function hasSnapshotToday(householdId: string): Promise<boolean> {
+  const supabase = await createClient();
+  const today = new Date().toISOString().slice(0, 10);
+
+  const { data } = await supabase
+    .from("net_worth_snapshots")
+    .select("id")
+    .eq("household_id", householdId)
+    .eq("snapshot_date", today)
+    .maybeSingle();
+
+  return Boolean(data);
 }

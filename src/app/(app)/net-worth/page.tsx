@@ -1,6 +1,11 @@
 import { redirect } from "next/navigation";
 import { getUserHouseholds } from "@/features/households/data";
-import { getNetWorthBreakdown } from "@/features/net-worth/data";
+import {
+  getNetWorthBreakdown,
+  getNetWorthHistory,
+  hasSnapshotToday,
+} from "@/features/net-worth/data";
+import { ensureMonthlySnapshot } from "@/features/net-worth/actions";
 import type { Account } from "@/features/accounts/data";
 import type { DebtRow } from "@/features/funds/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +18,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { NetWorthTrendChart } from "./net-worth-trend-chart";
+import { SaveSnapshotButton } from "./save-snapshot-button";
 
 // Duplicated from src/app/(app)/accounts/account-form.tsx (a "use client"
 // component) so this server page doesn't pull a client form into its bundle.
@@ -41,7 +48,15 @@ export default async function NetWorthPage() {
   const active = households[0];
   if (!active) redirect("/onboarding");
 
-  const breakdown = await getNetWorthBreakdown(active.id);
+  // Backfill a snapshot for the current month if the most recent one is
+  // older — cheap after the first call this month (one query, no-op).
+  await ensureMonthlySnapshot(active.id);
+
+  const [breakdown, history, snapshotToday] = await Promise.all([
+    getNetWorthBreakdown(active.id),
+    getNetWorthHistory(active.id),
+    hasSnapshotToday(active.id),
+  ]);
   const currency = active.currency ?? "MXN";
 
   const { assets, liabilities, netWorth } = breakdown;
@@ -77,11 +92,14 @@ export default async function NetWorthPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Patrimonio neto</h1>
-        <p className="text-sm text-muted-foreground">
-          Activos menos pasivos de {active.name}, calculado con tus saldos actuales.
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Patrimonio neto</h1>
+          <p className="text-sm text-muted-foreground">
+            Activos menos pasivos de {active.name}, calculado con tus saldos actuales.
+          </p>
+        </div>
+        <SaveSnapshotButton householdId={active.id} hasToday={snapshotToday} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -137,6 +155,15 @@ export default async function NetWorthPage() {
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Evolución</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <NetWorthTrendChart data={history} currency={currency} />
+        </CardContent>
+      </Card>
 
       {isEmpty ? (
         <Card>
