@@ -4,6 +4,7 @@ import { useActionState, useRef, useState, useEffect, useCallback } from "react"
 import { toast } from "sonner";
 import { createTransaction } from "@/features/transactions/actions";
 import type { AccountOption, CategoryRow } from "@/features/transactions/data";
+import type { IncomeSourceRow } from "@/features/income/data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,24 +35,42 @@ export function TransactionForm({
   householdId,
   accounts,
   categories,
+  incomeSources,
   onSuccess,
   defaultValues,
 }: {
   householdId: string;
   accounts: AccountOption[];
   categories: CategoryRow[];
+  incomeSources?: IncomeSourceRow[];
   onSuccess?: () => void;
   defaultValues?: TransactionFormDefaults;
 }) {
   const [state, formAction, pending] = useActionState(createTransaction, null);
   const formRef = useRef<HTMLFormElement>(null);
   const [type, setType] = useState<"INCOME" | "EXPENSE">("EXPENSE");
+  const [selectedIncomeSource, setSelectedIncomeSource] = useState<string>("");
+  const [amount, setAmount] = useState<number | "">(defaultValues?.amount ?? "");
+
+  const handleIncomeSourceChange = useCallback((sourceId: string | null) => {
+    if (sourceId) {
+      setSelectedIncomeSource(sourceId);
+      const source = incomeSources?.find((s) => s.id === sourceId);
+      if (source?.expected_amount) {
+        setAmount(source.expected_amount);
+      }
+    } else {
+      setSelectedIncomeSource("");
+    }
+  }, [incomeSources]);
 
   useEffect(() => {
     if (state === null) return;
     if (!state.error && !state.fieldErrors) {
       toast.success("Transacción guardada.");
       formRef.current?.reset();
+      setSelectedIncomeSource("");
+      setAmount("");
       onSuccess?.();
     }
   }, [state, onSuccess]);
@@ -88,6 +107,34 @@ export function TransactionForm({
         </button>
       </div>
 
+      {type === "INCOME" && incomeSources && incomeSources.length > 0 && (
+        <div className="space-y-2">
+          <Label htmlFor="incomeSource">Fuente de ingreso (opcional)</Label>
+          <Select value={selectedIncomeSource} onValueChange={handleIncomeSourceChange}>
+            <SelectTrigger id="incomeSource" className="w-full">
+              <SelectValue placeholder="Selecciona una fuente de ingreso">
+                {(value: string | null) =>
+                  value
+                    ? (incomeSources?.find((s) => s.id === value)?.name ?? "")
+                    : "Selecciona una fuente"
+                }
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {incomeSources.map((source) => (
+                <SelectItem key={source.id} value={source.id}>
+                  {source.name}
+                  {source.expected_amount ? ` - $${source.expected_amount.toFixed(2)}` : ""}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p className="text-xs text-muted-foreground">
+            Se pre-llena el monto esperado de la fuente seleccionada
+          </p>
+        </div>
+      )}
+
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="date">Fecha</Label>
@@ -111,7 +158,8 @@ export function TransactionForm({
             step="0.01"
             min="0.01"
             placeholder="0.00"
-            defaultValue={defaultValues?.amount}
+            value={amount}
+            onChange={(e) => setAmount(e.target.value ? parseFloat(e.target.value) : "")}
             required
           />
           {state?.fieldErrors?.amount && (

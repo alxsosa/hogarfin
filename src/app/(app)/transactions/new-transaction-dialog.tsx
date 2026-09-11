@@ -13,15 +13,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { TransactionForm } from "./transaction-form";
 import type { AccountOption, CategoryRow } from "@/features/transactions/data";
+import type { IncomeSourceRow } from "@/features/income/data";
 
 export function NewTransactionDialog({
   householdId,
   accounts,
   categories,
+  incomeSources,
 }: {
   householdId: string;
   accounts: AccountOption[];
   categories: CategoryRow[];
+  incomeSources?: IncomeSourceRow[];
 }) {
   const [open, setOpen] = useState(false);
 
@@ -43,6 +46,7 @@ export function NewTransactionDialog({
             householdId={householdId}
             accounts={accounts}
             categories={categories}
+            incomeSources={incomeSources}
             onSuccess={() => setOpen(false)}
           />
         )}

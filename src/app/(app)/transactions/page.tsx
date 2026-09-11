@@ -6,6 +6,7 @@ import {
   getHouseholdTransactions,
   getHouseholdCategories,
 } from "@/features/transactions/data";
+import { getHouseholdIncomeSources } from "@/features/income/data";
 import {
   Card,
   CardContent,
@@ -45,10 +46,11 @@ export default async function TransactionsPage() {
   const active = households[0];
   if (!active) redirect("/onboarding");
 
-  const [transactions, categories, accounts] = await Promise.all([
+  const [transactions, categories, accounts, incomeSources] = await Promise.all([
     getHouseholdTransactions(active.id, { limit: 50 }),
     getHouseholdCategories(active.id),
     getHouseholdAccounts(active.id),
+    getHouseholdIncomeSources(active.id),
   ]);
   const accountOptions = accounts.map((a) => ({ id: a.id, name: a.name }));
 
@@ -77,6 +79,7 @@ export default async function TransactionsPage() {
             householdId={active.id}
             accounts={accountOptions}
             categories={categories}
+            incomeSources={incomeSources}
           />
         </div>
       </div>
