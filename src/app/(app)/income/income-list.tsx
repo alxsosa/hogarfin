@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useCallback } from "react";
 import { toast } from "sonner";
 import { Archive } from "lucide-react";
 import {
@@ -35,6 +35,10 @@ export function IncomeList({
 }) {
   const [editing, setEditing] = useState<IncomeSourceRow | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  const handleOpenChange = useCallback((open: boolean) => {
+    if (!open) setEditing(null);
+  }, []);
 
   function handleArchive(id: string) {
     if (!confirm("¿Archivar esta fuente de ingreso?")) return;
@@ -101,9 +105,7 @@ export function IncomeList({
           categories={categories}
           incomeSource={editing}
           open={!!editing}
-          onOpenChange={(open) => {
-            if (!open) setEditing(null);
-          }}
+          onOpenChange={handleOpenChange}
         />
       )}
     </>

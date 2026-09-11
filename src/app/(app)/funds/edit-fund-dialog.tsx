@@ -1,7 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
-import { useCallback } from "react";
+import { useActionState, useEffect, useRef, useCallback } from "react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -15,18 +14,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { createFund } from "@/features/funds/actions";
+import { updateFund } from "@/features/funds/actions";
+import type { FundRow } from "@/features/funds/data";
 
-export function CreateFundDialog({
-  householdId,
+export function EditFundDialog({
+  fund,
   open,
   onOpenChange,
 }: {
-  householdId: string;
+  fund: FundRow;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const [state, formAction, pending] = useActionState(createFund, null);
+  const [state, formAction, pending] = useActionState(updateFund, null);
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleOnOpenChange = useCallback(onOpenChange, [onOpenChange]);
@@ -34,7 +34,7 @@ export function CreateFundDialog({
   useEffect(() => {
     if (state === null) return;
     if (!state.error && !state.fieldErrors) {
-      toast.success("Fondo creado.");
+      toast.success("Fondo actualizado.");
       formRef.current?.reset();
       handleOnOpenChange(false);
     }
@@ -44,19 +44,24 @@ export function CreateFundDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Nuevo fondo</DialogTitle>
+          <DialogTitle>Editar fondo</DialogTitle>
           <DialogDescription>
-            Un fondo de ahorro para un propósito específico (vacaciones,
-            reparaciones, etc.).
+            Actualiza los detalles de tu fondo de ahorro.
           </DialogDescription>
         </DialogHeader>
 
-        <form ref={formRef} id="create-fund-form" action={formAction} className="space-y-3">
-          <input type="hidden" name="householdId" value={householdId} />
+        <form ref={formRef} id="edit-fund-form" action={formAction} className="space-y-3">
+          <input type="hidden" name="id" value={fund.id} />
 
           <div className="space-y-2">
             <Label htmlFor="fund-name">Nombre</Label>
-            <Input id="fund-name" name="name" placeholder="Vacaciones" required />
+            <Input
+              id="fund-name"
+              name="name"
+              placeholder="Vacaciones"
+              defaultValue={fund.name}
+              required
+            />
             {state?.fieldErrors?.name && (
               <p className="text-sm text-destructive">{state.fieldErrors.name[0]}</p>
             )}
@@ -72,6 +77,7 @@ export function CreateFundDialog({
                 step="0.01"
                 min="0"
                 placeholder="0.00"
+                defaultValue={fund.goal_amount}
                 required
               />
               {state?.fieldErrors?.goalAmount && (
@@ -89,6 +95,7 @@ export function CreateFundDialog({
                 step="0.01"
                 min="0"
                 placeholder="0.00"
+                defaultValue={fund.current_balance}
               />
             </div>
           </div>
@@ -96,7 +103,12 @@ export function CreateFundDialog({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label htmlFor="fund-targetDate">Fecha meta (opcional)</Label>
-              <Input id="fund-targetDate" name="targetDate" type="date" />
+              <Input
+                id="fund-targetDate"
+                name="targetDate"
+                type="date"
+                defaultValue={fund.target_date ? fund.target_date.split("T")[0] : ""}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="fund-monthlyContribution">
@@ -109,13 +121,19 @@ export function CreateFundDialog({
                 step="0.01"
                 min="0"
                 placeholder="0.00"
+                defaultValue={fund.monthly_contribution ?? ""}
               />
             </div>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="fund-notes">Notas (opcional)</Label>
-            <Input id="fund-notes" name="notes" placeholder="Notas" />
+            <Input
+              id="fund-notes"
+              name="notes"
+              placeholder="Notas"
+              defaultValue={fund.notes ?? ""}
+            />
           </div>
 
           {state?.error && (
@@ -126,8 +144,8 @@ export function CreateFundDialog({
         </form>
 
         <DialogFooter>
-          <Button type="submit" form="create-fund-form" disabled={pending}>
-            {pending ? "Guardando..." : "Crear fondo"}
+          <Button type="submit" form="edit-fund-form" disabled={pending}>
+            {pending ? "Guardando..." : "Guardar cambios"}
           </Button>
         </DialogFooter>
       </DialogContent>

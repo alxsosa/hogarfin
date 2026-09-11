@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -9,6 +9,8 @@ import { FundCard } from "./fund-card";
 import { GoalCard } from "./goal-card";
 import { CreateFundDialog } from "./create-fund-dialog";
 import { CreateGoalDialog } from "./create-goal-dialog";
+import { EditFundDialog } from "./edit-fund-dialog";
+import { EditGoalDialog } from "./edit-goal-dialog";
 
 export function FundsGoalsTabs({
   householdId,
@@ -23,6 +25,12 @@ export function FundsGoalsTabs({
 }) {
   const [tab, setTab] = useState("funds");
   const [createOpen, setCreateOpen] = useState(false);
+  const [editingFund, setEditingFund] = useState<FundRow | null>(null);
+  const [editingGoal, setEditingGoal] = useState<GoalRow | null>(null);
+
+  const handleEditFund = useCallback((fund: FundRow) => {
+    setEditingFund(fund);
+  }, []);
 
   return (
     <Tabs value={tab} onValueChange={(v) => setTab(v as string)}>
@@ -44,7 +52,7 @@ export function FundsGoalsTabs({
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {funds.map((fund) => (
-              <FundCard key={fund.id} fund={fund} currency={currency} />
+              <FundCard key={fund.id} fund={fund} currency={currency} onEdit={handleEditFund} />
             ))}
           </div>
         )}
@@ -56,24 +64,46 @@ export function FundsGoalsTabs({
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {goals.map((goal) => (
-              <GoalCard key={goal.id} goal={goal} currency={currency} />
+              <GoalCard key={goal.id} goal={goal} currency={currency} onEdit={(g) => setEditingGoal(g)} />
             ))}
           </div>
         )}
       </TabsContent>
 
       {tab === "funds" ? (
-        <CreateFundDialog
-          householdId={householdId}
-          open={createOpen}
-          onOpenChange={setCreateOpen}
-        />
+        <>
+          <CreateFundDialog
+            householdId={householdId}
+            open={createOpen}
+            onOpenChange={setCreateOpen}
+          />
+          {editingFund && (
+            <EditFundDialog
+              fund={editingFund}
+              open={!!editingFund}
+              onOpenChange={(open) => {
+                if (!open) setEditingFund(null);
+              }}
+            />
+          )}
+        </>
       ) : (
-        <CreateGoalDialog
-          householdId={householdId}
-          open={createOpen}
-          onOpenChange={setCreateOpen}
-        />
+        <>
+          <CreateGoalDialog
+            householdId={householdId}
+            open={createOpen}
+            onOpenChange={setCreateOpen}
+          />
+          {editingGoal && (
+            <EditGoalDialog
+              goal={editingGoal}
+              open={!!editingGoal}
+              onOpenChange={(open) => {
+                if (!open) setEditingGoal(null);
+              }}
+            />
+          )}
+        </>
       )}
     </Tabs>
   );

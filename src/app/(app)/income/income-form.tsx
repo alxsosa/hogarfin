@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useCallback } from "react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -60,8 +60,7 @@ export function IncomeForm({
       formRef.current?.reset();
       onOpenChange(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
+  }, [state, onOpenChange, isEdit]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

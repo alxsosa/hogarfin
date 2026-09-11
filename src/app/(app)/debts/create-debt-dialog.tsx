@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useCallback } from "react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -36,15 +36,16 @@ export function CreateDebtDialog({
   const [state, formAction, pending] = useActionState(createDebt, null);
   const formRef = useRef<HTMLFormElement>(null);
 
+  const handleOnOpenChange = useCallback(onOpenChange, [onOpenChange]);
+
   useEffect(() => {
     if (state === null) return;
     if (!state.error && !state.fieldErrors) {
       toast.success("Deuda creada.");
       formRef.current?.reset();
-      onOpenChange(false);
+      handleOnOpenChange(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
+  }, [state, handleOnOpenChange]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

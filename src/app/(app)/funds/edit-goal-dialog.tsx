@@ -21,19 +21,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { createGoal } from "@/features/funds/actions";
+import { updateGoal } from "@/features/funds/actions";
 import { goalTypeLabels, goalTypeValues } from "@/lib/validations/funds";
+import type { GoalRow } from "@/features/funds/data";
 
-export function CreateGoalDialog({
-  householdId,
+export function EditGoalDialog({
+  goal,
   open,
   onOpenChange,
 }: {
-  householdId: string;
+  goal: GoalRow;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const [state, formAction, pending] = useActionState(createGoal, null);
+  const [state, formAction, pending] = useActionState(updateGoal, null);
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleOnOpenChange = useCallback(onOpenChange, [onOpenChange]);
@@ -41,7 +42,7 @@ export function CreateGoalDialog({
   useEffect(() => {
     if (state === null) return;
     if (!state.error && !state.fieldErrors) {
-      toast.success("Meta creada.");
+      toast.success("Meta actualizada.");
       formRef.current?.reset();
       handleOnOpenChange(false);
     }
@@ -51,18 +52,24 @@ export function CreateGoalDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Nueva meta</DialogTitle>
+          <DialogTitle>Editar meta</DialogTitle>
           <DialogDescription>
-            Define una meta financiera y dale seguimiento a tu progreso.
+            Actualiza los detalles de tu meta financiera.
           </DialogDescription>
         </DialogHeader>
 
-        <form ref={formRef} id="create-goal-form" action={formAction} className="space-y-3">
-          <input type="hidden" name="householdId" value={householdId} />
+        <form ref={formRef} id="edit-goal-form" action={formAction} className="space-y-3">
+          <input type="hidden" name="id" value={goal.id} />
 
           <div className="space-y-2">
             <Label htmlFor="goal-name">Nombre</Label>
-            <Input id="goal-name" name="name" placeholder="Fondo de emergencia" required />
+            <Input
+              id="goal-name"
+              name="name"
+              placeholder="Fondo de emergencia"
+              defaultValue={goal.name}
+              required
+            />
             {state?.fieldErrors?.name && (
               <p className="text-sm text-destructive">{state.fieldErrors.name[0]}</p>
             )}
@@ -70,7 +77,7 @@ export function CreateGoalDialog({
 
           <div className="space-y-2">
             <Label htmlFor="goal-type">Tipo</Label>
-            <Select name="type" defaultValue="custom">
+            <Select name="type" defaultValue={goal.type}>
               <SelectTrigger id="goal-type" className="w-full">
                 <SelectValue>
                   {(value: string | null) =>
@@ -100,6 +107,7 @@ export function CreateGoalDialog({
                 step="0.01"
                 min="0"
                 placeholder="0.00"
+                defaultValue={goal.target_amount}
                 required
               />
               {state?.fieldErrors?.targetAmount && (
@@ -117,6 +125,7 @@ export function CreateGoalDialog({
                 step="0.01"
                 min="0"
                 placeholder="0.00"
+                defaultValue={goal.current_amount}
               />
             </div>
           </div>
@@ -124,7 +133,12 @@ export function CreateGoalDialog({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label htmlFor="goal-targetDate">Fecha meta (opcional)</Label>
-              <Input id="goal-targetDate" name="targetDate" type="date" />
+              <Input
+                id="goal-targetDate"
+                name="targetDate"
+                type="date"
+                defaultValue={goal.target_date ? goal.target_date.split("T")[0] : ""}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="goal-priority">Prioridad (opcional)</Label>
@@ -134,6 +148,7 @@ export function CreateGoalDialog({
                 type="number"
                 step="1"
                 placeholder="0"
+                defaultValue={goal.priority ?? ""}
               />
             </div>
           </div>
@@ -146,8 +161,8 @@ export function CreateGoalDialog({
         </form>
 
         <DialogFooter>
-          <Button type="submit" form="create-goal-form" disabled={pending}>
-            {pending ? "Guardando..." : "Crear meta"}
+          <Button type="submit" form="edit-goal-form" disabled={pending}>
+            {pending ? "Guardando..." : "Guardar cambios"}
           </Button>
         </DialogFooter>
       </DialogContent>

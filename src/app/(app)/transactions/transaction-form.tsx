@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useRef, useState, useEffect } from "react";
+import { useActionState, useRef, useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { createTransaction } from "@/features/transactions/actions";
 import type { AccountOption, CategoryRow } from "@/features/transactions/data";
@@ -54,8 +54,7 @@ export function TransactionForm({
       formRef.current?.reset();
       onSuccess?.();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
+  }, [state, onSuccess]);
 
   return (
     <form ref={formRef} action={formAction} className="space-y-4">

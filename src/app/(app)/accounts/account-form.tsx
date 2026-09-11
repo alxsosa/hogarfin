@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 import { createAccount, updateAccount } from "@/features/accounts/actions";
 import { Button } from "@/components/ui/button";
@@ -53,8 +53,7 @@ export function AccountForm({
       toast.success(isEdit ? "Cuenta actualizada." : "Cuenta creada.");
       onSuccess?.();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
+  }, [state, onSuccess, isEdit]);
 
   const showCreditFields = CREDIT_LIKE_TYPES.has(type);
 
