@@ -10,17 +10,14 @@ export default function AuthLayout({
       <div className="w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center text-center">
           <Image
-            src="/brand/oikos-mark.png"
-            alt=""
-            width={56}
-            height={56}
-            className="mb-2"
+            src="/brand/oikos-logo-full.png"
+            alt="Oikos — Casa Próspera"
+            width={1086}
+            height={455}
+            className="w-64"
             priority
           />
-          <span className="font-heading text-2xl font-extrabold tracking-tight text-foreground">
-            Oikos
-          </span>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-2 text-sm text-muted-foreground">
             Finanzas del hogar, en un solo lugar.
           </p>
         </div>

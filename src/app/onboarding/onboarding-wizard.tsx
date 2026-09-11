@@ -152,16 +152,13 @@ export function OnboardingWizard() {
     <div className="w-full max-w-lg">
       <div className="mb-6 flex flex-col items-center text-center">
         <Image
-          src="/brand/oikos-mark.png"
-          alt=""
-          width={48}
-          height={48}
-          className="mb-2"
+          src="/brand/oikos-logo-full.png"
+          alt="Oikos — Casa Próspera"
+          width={1086}
+          height={455}
+          className="w-56"
           priority
         />
-        <span className="font-heading bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent">
-          OIKOS
-        </span>
       </div>
 
       <OnboardingProgress current={step} total={TOTAL_STEPS} />
