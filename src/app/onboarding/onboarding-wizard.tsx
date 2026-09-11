@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { toast } from "sonner";
 import {
   createHousehold,
@@ -149,7 +150,15 @@ export function OnboardingWizard() {
 
   return (
     <div className="w-full max-w-lg">
-      <div className="mb-6 text-center">
+      <div className="mb-6 flex flex-col items-center text-center">
+        <Image
+          src="/brand/oikos-mark.png"
+          alt=""
+          width={48}
+          height={48}
+          className="mb-2"
+          priority
+        />
         <span className="font-heading bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent">
           OIKOS
         </span>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -38,8 +39,14 @@ export function AppSidebar() {
       {/* Logo */}
       <div className="flex h-16 items-center border-b border-sidebar-border/30 px-6">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">O</span>
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/95">
+            <Image
+              src="/brand/oikos-mark.png"
+              alt=""
+              width={26}
+              height={26}
+              priority
+            />
           </div>
           <span className="font-bold tracking-tight text-lg bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
             OIKOS
